@@ -48,11 +48,15 @@ kotlin {
             implementation(libs.kotlin.serialization)
             implementation(libs.coil.compose)
             implementation(libs.coil.network.ktor)
+            implementation(compose.materialIconsExtended)
 
             // Koin
             api(libs.koin.core)
             implementation(libs.koin.compose)
             implementation(libs.koin.composeVM)
+            //Voyager
+            implementation(libs.voyager.navigator)
+            implementation(libs.voyager.transitions)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)

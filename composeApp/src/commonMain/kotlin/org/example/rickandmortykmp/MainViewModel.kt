@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import model.CharacterID
 
 class MainViewModel(
     private val repository: RickRepository
@@ -16,6 +17,8 @@ class MainViewModel(
 
     // Lista de personajes (Result)
     private val _characterList = MutableStateFlow<List<model.Result>>(emptyList())
+    private val _characterDetail = MutableStateFlow<CharacterID?>(null)
+    val characterDetail: StateFlow<CharacterID?> = _characterDetail
     val characterList: StateFlow<List<model.Result>> = _characterList
 
     // Posible error
@@ -27,8 +30,23 @@ class MainViewModel(
             _isLoading.value = true
             _errorMessage.value = null
             try {
-                val result = repository.getCharacterList() // CharacterDTO
-                _characterList.value = result.results      // solo la lista de Result
+                val response = repository.getCharacterList() // CharacterDTO Object
+                _characterList.value = response.results      // solo la lista de de Personajes
+            } catch (e: Exception) {
+                _errorMessage.value = "Error: ${e.message}"
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
+    fun getCharacterDetail(id: Int) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _errorMessage.value = null
+            try {
+                val response = repository.getCharacterDetail(id)
+                _characterDetail.value = response
             } catch (e: Exception) {
                 _errorMessage.value = "Error: ${e.message}"
             } finally {

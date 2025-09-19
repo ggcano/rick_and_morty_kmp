@@ -3,13 +3,25 @@ package org.example.rickandmortykmp
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
+import io.ktor.http.URLProtocol
+import io.ktor.http.encodedPath
 import model.CharacterDTO
-import org.example.rickandmortykmp.NetWorkingUtils.httpClient
+import model.CharacterID
 
 class RickRepository(private val networkModule: HttpClient) {
-    val url = "https://rickandmortyapi.com/api/character/?page=1"
+    val urlScreenMain = "https://rickandmortyapi.com/api/character/?page=1"
 
     suspend fun getCharacterList(): CharacterDTO {
-        return networkModule.get(url).body<CharacterDTO>()
+        return networkModule.get(urlScreenMain).body<CharacterDTO>()
+    }
+
+    suspend fun getCharacterDetail(id: Int): CharacterID {
+        return networkModule.get {
+            url {
+                protocol = URLProtocol.HTTPS
+                host = "rickandmortyapi.com"
+                encodedPath = "/api/character/$id"
+            }
+        }.body()
     }
 }

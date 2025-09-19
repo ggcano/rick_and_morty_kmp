@@ -5,6 +5,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import cafe.adriel.voyager.navigator.Navigator
+import cafe.adriel.voyager.transitions.FadeTransition
 import org.koin.compose.KoinApplication
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
@@ -20,14 +22,16 @@ fun App() {
                 modifier = Modifier.fillMaxSize(),
                 color = MaterialTheme.colorScheme.background
             ) {
-                MainScreen()
+                Navigator(screen = MainScreen()) { navigator ->
+                    FadeTransition(navigator)
+                }
             }
         }
     }
-    }
+}
 
 val appModule = module {
-    single { RickRepository(networkModule = NetWorkingUtils.httpClient)}
+    single { RickRepository(networkModule = NetWorkingUtils.httpClient) }
     viewModel { MainViewModel(get()) }
 }
 
